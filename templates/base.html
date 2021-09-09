@@ -46,14 +46,14 @@
 
           {% block userlinks %}
             {% if user.is_anonymous %}
-              <a href="{% url 'login' %}">{% translate 'Login' %}</a>
+              <a href="{% url 'accounts:login' %}">{% translate 'Login' %}</a>
             {% else %}
               <a href="{% url 'index' %}">{% translate 'View site' %}</a> /
               {% if user.is_active and user.is_staff %}
                 <a href="{% url 'admin:index' %}">{% translate 'Admin' %}</a> /
               {% endif %}
-              <a href="{% url 'profile' %}">{% translate 'Profile' %}</a> /
-              <form id="logout-form" method="post" action="{% url 'logout' %}">
+              <a href="{% url 'accounts:profile' %}">{% translate 'Profile' %}</a> /
+              <form id="logout-form" method="post" action="{% url 'accounts:logout' %}">
                   {% csrf_token %}
                   <button type="submit">{% translate 'Log out' %}</button>
               </form>

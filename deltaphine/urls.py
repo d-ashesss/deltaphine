@@ -16,32 +16,18 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path, reverse
+from django.urls import path, reverse, include
 from django.http import HttpResponse, HttpRequest
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView, DetailView
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 
-def login(request):
-    if request.user.is_authenticated:
-        return redirect("profile")
-    return auth_views.LoginView.as_view(extra_context={"title": "Login"})(request)
+from accounts import urls as accounts_urls
 
-def logout(request: HttpRequest):
-    if not request.user.is_authenticated:
-        return redirect("index")
-    return auth_views.LogoutView.as_view()(request)
-
-@method_decorator(login_required, name="dispatch")
-class ProfileView(TemplateView):
-    template_name = "registration/profile.html"
-    extra_context = {"title": "Profile"}
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="base.html"), name='index'),
-    path('accounts/profile/', ProfileView.as_view(), name='profile'),
-    path("accounts/login/", login, name="login"),
-    path("accounts/logout/", logout, name="logout"),
+    path('accounts/', include(accounts_urls)),
     path('admin/', admin.site.urls),
 ]
