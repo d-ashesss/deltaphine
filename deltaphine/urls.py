@@ -15,13 +15,33 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-from django.http import HttpResponse
+from django.contrib.auth import views as auth_views
+from django.urls import path, reverse
+from django.http import HttpResponse, HttpRequest
+from django.contrib.auth.decorators import login_required
+from django.views.generic import TemplateView, DetailView
+from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 
-def index(request):
-    return HttpResponse("Hellworld. You're at the deltaphine index.")
+def login(request):
+    if request.user.is_authenticated:
+        return redirect("profile")
+    return auth_views.LoginView.as_view(extra_context={"title": "Login"})(request)
+
+def logout(request: HttpRequest):
+    if not request.user.is_authenticated:
+        return redirect("index")
+    return auth_views.LogoutView.as_view()(request)
+
+@method_decorator(login_required, name="dispatch")
+class ProfileView(TemplateView):
+    template_name = "registration/profile.html"
+    extra_context = {"title": "Profile"}
 
 urlpatterns = [
-    path('', index, name='index'),
+    path('', TemplateView.as_view(template_name="base.html"), name='index'),
+    path('accounts/profile/', ProfileView.as_view(), name='profile'),
+    path("accounts/login/", login, name="login"),
+    path("accounts/logout/", logout, name="logout"),
     path('admin/', admin.site.urls),
 ]

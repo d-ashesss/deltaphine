@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<div id="content-main">
+  <h1>{% translate 'Profile' %}</h1>
+  Look at you! You're {% firstof user.get_short_name user.get_username %}!
+</div>
+{% endblock %}
