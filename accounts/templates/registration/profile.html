@@ -1,9 +1,21 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static "admin/css/forms.css" %}">{% endblock %}
 
 {% block content %}
-<div id="content-main">
   <h1>{% translate 'Profile' %}</h1>
-  Look at you! You're {% firstof user.get_short_name user.get_username %}!
+  <h2>Look at you! You're <strong>{% firstof user.get_short_name user.get_username %}</strong>!</h2>
+<div id="content-main">
+  <form action="" method="post" id="user_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <fieldset class="module aligned">
+      <h2>{% translate 'Personal info' %}</h2>
+      {{ form.as_div }}
+    </fieldset>
+    <div class="submit-row">
+      <input type="submit" value="{% translate 'Save' %}" class="default" name="_save">
+    </div>
+  </form>
 </div>
 {% endblock %}
